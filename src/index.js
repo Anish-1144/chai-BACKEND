@@ -23,7 +23,7 @@ dotenv.config({
 
  })
 .catch((err)=>{
-    console.log(`mono-db connection faild ${process.env.PORT}`, err);
+    console.log(`mono-db connection faild from index.js ${process.env.PORT}`, err);
     
  })
 

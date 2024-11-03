@@ -14,7 +14,7 @@ const connectDB = async () => {
       
         
     } catch (error) {
-        console.log("mongodb---FAild" ,error);
+        console.log("mongodb---FAild from db" ,error);
         // console.log(connectionInstance);
         
         process.exit(1)
