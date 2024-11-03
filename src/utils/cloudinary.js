@@ -12,22 +12,20 @@ cloudinary.config({
 
 
 
-const uploadeonCloudinary= async(localFilePath) => {
-    try {
-        if(!localFilePath) return null
-        // uploadthe file on cloudinary
-       const responce = await cloudinary.v2.uploader.upload(localFilePath , {
-            resource_type : "auto"
-        });
-        // uplaoad success
-        console.log("success file upload" , responce.url);
-        return responce ;
-        
-    } catch (error) {
-        fs.unlinksync(localFilePath) //remove local file if upload fail
-        
-    }
-}
+const uploadOnCloudinary = async (localFilePath) => {
+  try {
+    if (!localFilePath) return null;
+    // uploadthe file on cloudinary
+    const responce = await cloudinary.v2.uploader.upload(localFilePath, {
+      resource_type: "auto",
+    });
+    // uplaoad success
+    console.log("success file upload", responce.url);
+    return responce;
+  } catch (error) {
+    fs.unlinksync(localFilePath); //remove local file if upload fail
+  }
+};
 
 // cloudinary.v2.uploader.upload()
 

@@ -20,6 +20,17 @@ const app = express()
 
 
 
+// import routes
+import userRouter from "./routes/user.routes.js"
+
+
+// declaration
+app.use("/api/v1/user",userRouter)
+// http://localhost:3000/api/v1/user/register
+
+
+
+
 
 
 
