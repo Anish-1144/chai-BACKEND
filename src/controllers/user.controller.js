@@ -4,7 +4,21 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import {ApiResponce} from "../utils/ApiResponce.js"
 
+const genrateAccessTokenAndRefrashToken = async(userId) => {
+     try {
+        const user = await User.findById(userId);
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
+        user.refreshToken =refreshToken
+        await user.save({validateBeforeSave : false});
+        return { accessToken, refreshToken}
 
+
+     } catch (error) {
+      throw new ApiError("error in genrating access token and refrash token ")
+      
+     }
+}
 
 
 const registerUser = asyncHandler( async (req , res) => {
@@ -90,4 +104,72 @@ const registerUser = asyncHandler( async (req , res) => {
     .json(new ApiResponce(200, createdUser, "created  user successfull "));
 })
 
-export {registerUser}
+
+
+// login-User
+const loginUser = asyncHandler(async(req, res) => {
+  // res.body =>data
+  //  same username or email 
+  // if user hai to password check
+  // password ager true hai to genrate access tokan or refresh token
+  // nhi hai to err
+  // and in last we send this token into frontend by cookies
+
+
+  const {username ,email ,password} = req.body;
+        if((!username || !email)){
+          throw new ApiError("username ,email is requierds")
+        }
+
+  const user = await User.findOne({
+   $or:[{username},{email}]
+  })
+
+
+  if (!user) {
+    throw new ApiError(400,"user does not exist")
+    
+  }
+   
+ const passwodIsValid = user.isPasswordCorrect(password)
+   
+   if (!passwodIsValid) {
+    throw new ApiError(400," password is not valied")   
+   }
+
+   const {accessToken,refreshToken } = genrateAccessTokenAndRefrashToken(user._id)
+
+   const loggedUserId = await User.findById(user._id).select(
+     "-password -refreshToken"
+   );
+
+  //  cookies
+   const options = {
+    httpOnly : true,
+    secure : true
+
+   }
+  
+
+   return res.status(200)
+   .cookies("accessToken",accessToken)
+   .cookies("refreshToken", refreshToken)
+   .json(
+    ApiResponce(
+      200,
+      {
+        user : loggedUserId, accessToken , refreshToken
+        
+      },
+      "User logged in seccessfully"
+    )
+   )
+})
+
+
+export {
+
+  registerUser,
+  loginUser
+
+}
