@@ -166,6 +166,10 @@ const loginUser = asyncHandler(async(req, res) => {
    )
 })
 
+//  loggOut function
+const  logoutUser = asyncHandler(async(req,res)=>{
+
+})
 
 export {
 
